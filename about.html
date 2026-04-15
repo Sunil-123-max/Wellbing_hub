@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About Us - Wellbeing Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f8fafc; margin: 0; }
+    .about-hero {
+      background: linear-gradient(135deg, rgba(15,23,42,0.82), rgba(37,99,235,0.75)), url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      color: #fff;
+      text-align: center;
+      padding: 80px 20px 40px 20px;
+      position: relative;
+    }
+    .about-hero h1 { font-size: 3rem; font-weight: 900; margin-bottom: 18px; }
+    .about-hero p { font-size: 1.25rem; max-width: 700px; margin: 0 auto; opacity: 0.95; }
+    .about-content {
+      max-width: 900px;
+      margin: 40px auto 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+      padding: 40px 32px;
+    }
+    .about-content h2 { color: #2563eb; font-size: 2rem; margin-top: 0; }
+    .about-content p { color: #334155; font-size: 1.1rem; line-height: 1.7; }
+    .offer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin: 40px 0 30px 0;
+    }
+    .offer-card {
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      border: 1px solid transparent;
+      transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    }
+    .offer-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.16);
+      border-color: #bfdbfe;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+    .offer-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      transition: transform 0.3s ease;
+    }
+    .offer-card:hover img {
+      transform: scale(1.08);
+    }
+    .offer-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+      color: #2563eb;
+      font-weight: 700;
+      transition: color 0.2s ease;
+    }
+    .offer-card:hover h3 {
+      color: #ffffff;
+    }
+    .offer-card p {
+      margin: 0;
+      color: #334155;
+      font-size: .98rem;
+    }
+    .offer-card:hover p {
+      color: #e2e8f0;
+    }
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin: 10px 0 34px;
+    }
+    .impact-item {
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .impact-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.16);
+      border-color: #93c5fd;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+    .impact-item strong {
+      display: block;
+      color: #1d4ed8;
+      font-size: 1.4rem;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .impact-item span {
+      color: #334155;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+    .impact-item:hover strong {
+      color: #ffffff;
+    }
+    .impact-item:hover span {
+      color: #dbeafe;
+    }
+    .info-note {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 28px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .info-note:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
+      border-color: #cbd5e1;
+    }
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .cta-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 700;
+      padding: 11px 16px;
+      border-radius: 10px;
+      transition: background 0.2s ease;
+    }
+    .cta-btn:hover {
+      background: #1d4ed8;
+    }
+    .cta-btn.alt {
+      background: #0f172a;
+    }
+    .cta-btn.alt:hover {
+      background: #1e293b;
+    }
+  </style>
+  </style>
+</head>
+<body>
+  <nav class="bg-white shadow-sm w-full fixed top-0 left-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3"><img src="logo.png" width="55" height="55" alt="logo"><span class="text-xl font-extrabold">Wellbeing Hub</span></a>
+      <div class="hidden md:flex items-center gap-8 text-slate-700 font-medium">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="events.html" class="nav-link">Events</a>
+        <a href="news.html" class="nav-link">News</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="booking.html" class="ml-4 bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">Book Now</a>
+      </div>
+
+      <button id="darkModeToggle" class="text-2xl px-3" aria-label="Toggle dark mode">🌙</button>
+    </div>
+  </nav>
+  <div class="about-hero" style="padding-top:110px;">
+    <h1>About Wellbeing Hub</h1>
+    <p>Empowering Coventry residents to live healthier, happier lives through accessible community services, events, and support.</p>
+  </div>
+  <div class="about-content">
+    <h2>Our Mission</h2>
+    <p>
+      Wellbeing Hub is dedicated to connecting people in Coventry with a wide range of health, wellbeing, and community resources. Our mission is to make support accessible to everyone—regardless of age, background, or circumstance. We believe in the power of community, collaboration, and compassion to improve lives.
+    </p>
+    <h2>What We Offer</h2>
+    <p>
+      We provide free health screenings, wellbeing workshops, family activities, and support groups. Our events and services are designed to foster connection, learning, and personal growth. Whether you’re looking for advice, a friendly group, or new skills, you’ll find a welcoming space at the Wellbeing Hub.
+    </p>
+    <div class="offer-grid">
+      <div class="offer-card">
+        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=200&q=80" alt="Health Checks" style="width:140px;height:140px;object-fit:cover;border-radius:16px;margin-bottom:16px;">
+        <h3>Health Checks</h3>
+        <p>Free NHS-supported health screenings and advice for all ages.</p>
+      </div>
+      <div class="offer-card">
+        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=200&q=80" alt="Workshops" style="width:140px;height:140px;object-fit:cover;border-radius:16px;margin-bottom:16px;">
+        <h3>Workshops & Events</h3>
+        <p>Join mindfulness, fitness, and wellbeing workshops every week.</p>
+      </div>
+      <div class="offer-card">
+        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=200&q=80" alt="Family Support" style="width:140px;height:140px;object-fit:cover;border-radius:16px;margin-bottom:16px;">
+        <h3>Family Support</h3>
+        <p>Parenting classes, playgroups, and family-friendly activities.</p>
+      </div>
+      <div class="offer-card">
+        <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80" alt="Community" style="width:140px;height:140px;object-fit:cover;border-radius:16px;margin-bottom:16px;">
+        <h3>Community</h3>
+        <p>Meet new friends, join clubs, and volunteer in your local area.</p>
+      </div>
+    </div>
+    <h2>Why Choose Us?</h2>
+    <ul style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:0 0 36px 0;padding:0;list-style:none;">
+      <li style="background:#e0e7ef;border-radius:10px;padding:18px 20px;font-size:1.05rem;color:#2563eb;font-weight:600;">✔ 100% Free Services</li>
+      <li style="background:#e0e7ef;border-radius:10px;padding:18px 20px;font-size:1.05rem;color:#2563eb;font-weight:600;">✔ NHS Supported</li>
+      <li style="background:#e0e7ef;border-radius:10px;padding:18px 20px;font-size:1.05rem;color:#2563eb;font-weight:600;">✔ All Ages Welcome</li>
+      <li style="background:#e0e7ef;border-radius:10px;padding:18px 20px;font-size:1.05rem;color:#2563eb;font-weight:600;">✔ Friendly, Inclusive Community</li>
+    </ul>
+    <h2>Our Impact at a Glance</h2>
+    <div class="impact-grid">
+      <div class="impact-item">
+        <strong>2,500+</strong>
+        <span>Residents Supported</span>
+      </div>
+      <div class="impact-item">
+        <strong>180+</strong>
+        <span>Events Each Year</span>
+      </div>
+      <div class="impact-item">
+        <strong>70+</strong>
+        <span>Active Volunteers</span>
+      </div>
+      <div class="impact-item">
+        <strong>15+</strong>
+        <span>Local Partners</span>
+      </div>
+    </div>
+    <h2>Meet Our Team</h2>
+    <div style="display:flex;gap:32px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;">
+      <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=200&q=80" alt="Team Member 1" style="width:120px;height:120px;object-fit:cover;border-radius:50%;box-shadow:0 2px 12px #0002;">
+      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=200&q=80" alt="Team Member 2" style="width:120px;height:120px;object-fit:cover;border-radius:50%;box-shadow:0 2px 12px #0002;">
+      <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=200&q=80" alt="Team Member 3" style="width:120px;height:120px;object-fit:cover;border-radius:50%;box-shadow:0 2px 12px #0002;">
+    </div>
+    <p style="text-align:center;color:#334155;font-size:1.08rem;max-width:600px;margin:0 auto 18px auto;">Our dedicated team is here to support you every step of the way. We’re passionate about making a difference in our community.</p>
+    <h2>Our Values</h2>
+    <p>
+      <strong>Inclusivity:</strong> Everyone is welcome.<br>
+      <strong>Support:</strong> We’re here to help, listen, and guide.<br>
+      <strong>Community:</strong> Building strong, supportive networks.<br>
+      <strong>Empowerment:</strong> Helping people take charge of their wellbeing.
+    </p>
+    <h2>Get Involved</h2>
+    <p>
+      Join us at our next event, volunteer, or simply drop in for a chat. Together, we’re making Coventry a healthier, more connected place to live.
+    </p>
+    <div class="info-note">
+      <p style="margin:0; font-size:1rem;"><strong>Accessibility & Inclusion:</strong> Wheelchair-friendly venue, inclusive support for all ages, and language assistance can be arranged on request.</p>
+    </div>
+    <div class="cta-row">
+      <a class="cta-btn" href="booking.html">Book a Session</a>
+      <a class="cta-btn alt" href="contact.html">Contact Our Team</a>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Community News - Wellbeing Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; padding-top: 86px; }
+
+.news-section {
+  padding: 60px 8%;
+  background: #f8fafc;
+}
+
+/* Header */
+.news-header {
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  color: white;
+  padding: 70px 20px;
+  border-radius: 14px;
+  margin-bottom: 50px;
+  animation: fadeDown 1s ease;
+}
+.news-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1523995462485-3d171b5c8fa9?auto=format&fit=crop&w=1600&q=80');
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+.news-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(15,23,42,0.6), rgba(30,58,138,0.5));
+  z-index: 1;
+}
+.news-header > * {
+  position: relative;
+  z-index: 2;
+}
+
+.section-title {
+  margin: 40px 0 20px;
+  font-size: 26px;
+}
+
+.topic-highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 0 0 24px;
+}
+
+.topic-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.topic-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.topic-card-content {
+  padding: 14px 16px 16px;
+}
+
+.topic-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 28px rgba(15,23,42,0.14);
+  border-color: #93c5fd;
+}
+
+.topic-card:hover img {
+  transform: scale(1.06);
+}
+
+.topic-card:hover h4 {
+  color: #1d4ed8;
+}
+
+.topic-card h4 {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+.topic-card p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.5;
+  font-size: 0.92rem;
+}
+
+/* Success Stories */
+.success-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.success-card {
+  background: #eef4fb;
+  padding: 16px;
+  border-radius: 14px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.success-card:hover {
+  transform: translateY(-5px) scale(1.015);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.success-card.blue { background: linear-gradient(135deg, #d0ebff, #bfdbfe); border-left: 5px solid #3b82f6; }
+.success-card.green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-left: 5px solid #22c55e; }
+.success-card.orange { background: linear-gradient(135deg, #fef3c7, #fed7aa); border-left: 5px solid #f59e0b; }
+
+.success-photo {
+  width: 110px;
+  min-width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  transition: transform 0.3s ease;
+}
+
+.success-card:hover .success-photo {
+  transform: scale(1.04);
+}
+
+.success-info h4 {
+  margin: 0 0 4px;
+  color: #0f172a;
+  font-size: 1.05rem;
+}
+
+.success-info p {
+  margin: 10px 0 0;
+  color: #475569;
+  line-height: 1.55;
+}
+
+.category {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+@media(max-width:640px){
+  .success-card {
+    flex-direction: column;
+  }
+
+  .success-photo {
+    width: 100%;
+    min-width: 0;
+    height: 200px;
+  }
+}
+
+/* Stories */
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 22px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.story-card {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  transition: 0.4s ease;
+  cursor: pointer;
+  font-size: 0.95rem;
+  width: 100%;
+  min-height: 450px;
+}
+
+.story-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.16);
+  filter: saturate(1.08) brightness(1.03);
+  border: 1px solid #3b82f6;
+}
+
+.story-card:hover .tag {
+  transform: scale(1.06);
+  opacity: 0.98;
+}
+
+.image-wrap {
+  overflow: hidden;
+  height: 240px;
+  background: linear-gradient(135deg, #e5e7eb, #dbeafe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  transition: transform 0.8s ease, filter 0.6s ease;
+  filter: brightness(0.95);
+}
+
+.story-card img:hover {
+  transform: scale(1.12);
+  filter: brightness(1);
+}
+
+.story-card img:hover {
+  filter: brightness(1);
+}
+
+.story-card:hover img {
+  transform: scale(1.1);
+}
+
+.story-content {
+  padding: 14px;
+  min-height: 165px;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+}
+
+.story-content p {
+  margin: 8px 0;
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.4;
+  max-height: 3.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.story-content h3 {
+  margin-top: 8px;
+  font-size: 1.15rem;
+  color: #1f2937;
+  line-height: 1.25;
+  max-height: 2.5rem;
+  overflow: hidden;
+}
+
+.tag {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.tag.blue { background:#dbeafe; color:#2563eb; }
+.tag.orange { background:#ffedd5; color:#ea580c; }
+.tag.purple { background:#ede9fe; color:#7c3aed; }
+.tag.green { background:#dcfce7; color:#15803d; }
+
+.date {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.story-content h3 {
+  margin-top: 10px;
+  font-size: 22px;
+  color: #1f2937;
+}
+
+.story-content p {
+  color: #4b5563;
+  line-height: 1.55;
+  margin: 10px 0 15px;
+}
+
+.read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #2563eb;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.25s, transform 0.25s;
+}
+
+.read-more:hover {
+  color: #1d4ed8;
+  transform: translateX(2px);
+}
+
+/* Newsletter + Footer */
+.newsletter-section {
+  background: #eff6ff;
+  padding: 50px 8%;
+}
+.newsletter-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+.newsletter-section h2 {
+  color: #0f172a;
+  font-size: 38px;
+  margin-bottom: 12px;
+}
+.newsletter-section p {
+  color: #475569;
+  font-size: 17px;
+  margin-bottom: 22px;
+}
+.newsletter-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  justify-content: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.newsletter-form input[type="email"] {
+  padding: 15px 18px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 16px;
+}
+.newsletter-form button {
+  background: #2563eb;
+  border: none;
+  color: white;
+  padding: 15px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.newsletter-form button:hover {
+  background: #1d4ed8;
+}
+.site-footer {
+  background: #061b33;
+  color: #cbd5e1;
+  padding: 45px 8%;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 30px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.footer-col h3 {
+  color: #ffffff;
+  margin-bottom: 14px;
+}
+.footer-col p,
+.footer-col li,
+.footer-col a {
+  color: #cbd5e1;
+}
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+}
+.footer-col ul li {
+  margin-bottom: 8px;
+}
+.footer-col a {
+  text-decoration: none;
+}
+.footer-col a:hover {
+  text-decoration: underline;
+}
+.social-icons {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+.social-icons a {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Font Awesome 5 Free', 'Arial', sans-serif;
+  font-weight: 900;
+  background: rgba(255,255,255,0.11);
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+.social-icons a:hover {
+  transform: translateY(-2px);
+}
+.opening-hours {
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
+}
+.copyright {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .stories-grid{
+    grid-template-columns:1fr;
+  }
+  .success-grid{
+    grid-template-columns:1fr;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+  .newsletter-form {
+    grid-template-columns: 1fr;
+  }
+}
+  </style>
+  </style>
+</head>
+<body class="bg-gray-100">
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow-sm w-full fixed top-0 left-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3"><img src="logo.png" width="55" height="55" alt="logo"><span class="text-xl font-extrabold">Wellbeing Hub</span></a>
+      <div class="hidden md:flex items-center gap-8 text-slate-700 font-medium">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="events.html" class="nav-link">Events</a>
+        <a href="news.html" class="nav-link active">News</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="booking.html" class="ml-4 bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">Book Now</a>
+      </div>
+
+      <button id="darkModeToggle" class="text-2xl px-3" aria-label="Toggle dark mode">🌙</button>
+    </div>
+  </nav>
+
+  <section class="news-section">
+    <div class="news-header">
+      <span class="badge">Latest Updates</span>
+      <h1>Community News</h1>
+      <p>
+        Stay updated with the latest stories, programme launches, success
+        stories, and community achievements from the Wellbeing Hub.
+      </p>
+    </div>
+
+    <h2 class="section-title">Success Stories</h2>
+    <div class="success-grid">
+      <div class="success-card blue">
+        <img class="success-photo" src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=900&q=80" alt="Sarah smiling after wellbeing support">
+        <div class="success-info">
+          <h4>Sarah M.</h4>
+          <span class="category">Mental Health & Fitness</span>
+          <p>
+            "After losing my job and struggling with anxiety, I didn’t know where
+            to turn. The Hub’s counselling service and yoga classes completely
+            turned my life around."
+          </p>
+        </div>
+      </div>
+      <div class="success-card green">
+        <img class="success-photo" src="https://images.unsplash.com/photo-1516302752625-fcc3c50ae61f?auto=format&fit=crop&w=900&q=80" alt="Older couple taking part in community activities">
+        <div class="success-info">
+          <h4>David & Margaret L.</h4>
+          <span class="category">Community Groups & Digital Skills</span>
+          <p>
+            "As retired residents, we felt increasingly isolated. The walking
+            group and coffee mornings gave us a reason to get up each day."
+          </p>
+        </div>
+      </div>
+      <div class="success-card orange">
+        <img class="success-photo" src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=900&q=80" alt="Healthy cooking and nutrition guidance">
+        <div class="success-info">
+          <h4>Ayesha R.</h4>
+          <span class="category">Nutrition & Lifestyle</span>
+          <p>
+            "The nutrition coaching and recipe club helped me manage my diabetes
+            and reduced my medication need. The support made it sustainable."
+          </p>
+        </div>
+      </div>
+      <div class="success-card blue">
+        <img class="success-photo" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80" alt="Man gaining digital and employment skills">
+        <div class="success-info">
+          <h4>Luke K.</h4>
+          <span class="category">Employment and Skills</span>
+          <p>
+            "Learning basic digital skills at the Hub led to a part-time job with
+            a local charity, and I now mentor new members in the same program."
+          </p>
+        </div>
+      </div>
+      <div class="success-card green">
+        <img class="success-photo" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80" alt="Woman building confidence in a support group">
+        <div class="success-info">
+          <h4>Maria E.</h4>
+          <span class="category">Peer Support & Confidence</span>
+          <p>
+            "I was shy and low on confidence. The public speaking circle and
+            team volunteering gave me a new voice and a sense of belonging."
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">More Stories</h2>
+    <div class="topic-highlights">
+      <article class="topic-card">
+        <img loading="lazy" src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80" alt="People exercising together" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=900&q=80';">
+        <div class="topic-card-content">
+          <h4>Physical Activity</h4>
+          <p>Weekly sessions focus on movement, stress reduction, and confidence-building through beginner-friendly classes and guided routines.</p>
+        </div>
+      </article>
+      <article class="topic-card">
+        <img loading="lazy" src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=900&q=80" alt="Family wellbeing session" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=900&q=80';">
+        <div class="topic-card-content">
+          <h4>Family Support</h4>
+          <p>Parents and carers receive practical tools on communication, routines, and emotional wellbeing with follow-up support from local partners.</p>
+        </div>
+      </article>
+      <article class="topic-card">
+        <img loading="lazy" src="https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=900&q=80" alt="Group mental health support" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1472653431158-6364773b2a56?auto=format&fit=crop&w=900&q=80';">
+        <div class="topic-card-content">
+          <h4>Mental Health</h4>
+          <p>Programmes combine therapy, peer support, and creative activities to improve mood, reduce isolation, and build resilient daily habits.</p>
+        </div>
+      </article>
+      <article class="topic-card">
+        <img loading="lazy" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=900&q=80" alt="Digital skills and employment training" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80';">
+        <div class="topic-card-content">
+          <h4>Skills & Employment</h4>
+          <p>Residents gain digital confidence, job-readiness skills, and mentoring opportunities linked to local employers and community organisations.</p>
+        </div>
+      </article>
+    </div>
+    <div class="stories-grid">
+      <div class="story-card">
+        <div class="image-wrap">
+          <img loading="lazy" width="1280" height="240" src="https://images.unsplash.com/photo-1526401485004-5f8f2f82848e?auto=format&fit=crop&w=1280&q=80" alt="Outdoor Yoga session" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1280&q=80';">
+        </div>
+        <div class="story-content">
+          <span class="tag blue">Physical Activity</span>
+          <span class="date">March 1, 2026</span>
+          <h3>Yoga & Mindfulness Programme Expanding</h3>
+          <p>Due to overwhelming demand, the Hub is adding evening and weekend yoga classes, plus a new guided hiking club with 120+ residents signed up already. Instructors now provide progress check-ins to help members set weekly wellbeing goals.</p>
+          <a class="read-more" href="#">Read More →</a>
+        </div>
+      </div>
+      <div class="story-card">
+        <div class="image-wrap">
+          <img loading="lazy" width="1280" height="240" src="https://images.unsplash.com/photo-1517292987719-0369a794ec0f?auto=format&fit=crop&w=1280&q=80" alt="Family support session" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1280&q=80';">
+        </div>
+        <div class="story-content">
+          <span class="tag orange">Family Support</span>
+          <span class="date">February 28, 2026</span>
+          <h3>200 Families Attend Parenting Workshop Series</h3>
+          <p>This six-week course improved communication, reduced parent stress scores by 40%, and gave families new crisis-support pathways tied to local NHS services. A new monthly follow-up clinic is being introduced to support long-term progress.</p>
+          <a class="read-more" href="#">Read More →</a>
+        </div>
+      </div>
+      <div class="story-card">
+        <div class="image-wrap">
+          <img loading="lazy" width="1280" height="240" src="https://images.unsplash.com/photo-1496626457197-8f8d5f0f4e63?auto=format&fit=crop&w=1280&q=80" alt="Community art therapy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=1280&q=80';">
+        </div>
+        <div class="story-content">
+          <span class="tag purple">Mental Health</span>
+          <span class="date">February 20, 2026</span>
+          <h3>Art Therapy Programme Shows Remarkable Results</h3>
+          <p>Participants reported major improvements in anxiety, depression, and sleep quality; local gallery hosted first all-Hub community exhibition. Therapists are now preparing a youth-focused stream to support teens and young adults.</p>
+          <a class="read-more" href="#">Read More →</a>
+        </div>
+      </div>
+      <div class="story-card">
+        <div class="image-wrap">
+          <img loading="lazy" width="1280" height="240" src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1280&q=80" alt="Community gardening" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1280&q=80';">
+        </div>
+        <div class="story-content">
+          <span class="tag green">Sustainability</span>
+          <span class="date">March 10, 2026</span>
+          <h3>Community Garden Initiative Sees Record Harvest</h3>
+          <p>Over 25 volunteers harvested 150kg of fresh produce, delivered to local food banks, and launched a weekend gardening mentorship for young people. Nutrition sessions now include live cooking demos using garden-grown ingredients.</p>
+          <a class="read-more" href="#">Read More →</a>
+        </div>
+      </div>
+      <div class="story-card">
+        <div class="image-wrap">
+          <img loading="lazy" width="1280" height="240" src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1280&q=80" alt="Support group circle" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1472653431158-6364773b2a56?auto=format&fit=crop&w=1280&q=80';">
+        </div>
+        <div class="story-content">
+          <span class="tag blue">Wellness</span>
+          <span class="date">March 12, 2026</span>
+          <h3>Peer Support Circle Launches Weekend Workshops</h3>
+          <p>New drop-in sessions now run every Saturday offering emotional check-ins, coaching, and wellbeing plans; 90% report better confidence after 2 sessions. The team has also added referral pathways for participants needing one-to-one support.</p>
+          <a class="read-more" href="#">Read More →</a>
+        </div>
+      </div>
+      <div class="story-card">
+        <div class="image-wrap">
+          <img loading="lazy" width="1280" height="240" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1280&q=80" alt="Digital skills class" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1280&q=80';">
+        </div>
+        <div class="story-content">
+          <span class="tag purple">Digital Skills</span>
+          <span class="date">March 15, 2026</span>
+          <h3>Digital Skills Bootcamp Launches with 3 Tech Partners</h3>
+          <p>Collaborating with local businesses, this programme helped 30 residents complete industry certificates and set up 10 small home-based enterprises. The next cohort will include CV clinics, interview coaching, and hybrid evening classes.</p>
+          <a class="read-more" href="#">Read More →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter + Footer -->
+  <section class="newsletter-section">
+    <div class="newsletter-wrapper">
+      <h2>Stay in the Loop</h2>
+      <p>Subscribe to our newsletter for the latest community news, upcoming events, and wellbeing tips delivered to your inbox.</p>
+      <form class="newsletter-form" action="#" method="post" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');">
+        <input type="email" name="email" placeholder="Enter your email" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3>Wellbeing Hub</h3>
+        <p>Supporting residents with access to local health and wellbeing services, events, and community networks.</p>
+        <div class="social-icons">
+          <a href="#" aria-label="Facebook" title="Facebook">&#xf09a;</a>
+          <a href="#" aria-label="Twitter" title="Twitter">&#xf099;</a>
+          <a href="#" aria-label="Instagram" title="Instagram">&#xf16d;</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="news.html">News</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Contact</h3>
+        <p><strong>Address:</strong> 123 Community Lane, Coventry CV1 2AB</p>
+        <p><strong>Email:</strong> <a href="mailto:contact@wellbeinghub.org">contact@wellbeinghub.org</a></p>
+        <p><strong>Phone:</strong> 024 7612 3456</p>
+        <div class="opening-hours">
+          <h4>Opening Hours</h4>
+          <p>Mon–Fri: 9am–6pm</p>
+          <p>Sat: 10am–4pm</p>
+        </div>
+      </div>
+    </div>
+    <div class="copyright">&copy; 2026 Wellbeing Hub. All rights reserved.</div>
+  </footer>
+  <script src="script.js"></script>
+  </body>
+</html>
+</body>
+</html>

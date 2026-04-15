@@ -1,0 +1,190 @@
+/* Main Stylesheet for Wellbeing Hub */
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap');
+
+/* Global Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navigation Styles */
+nav {
+  background: white;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: #374151;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.nav-link:hover {
+  color: #2563eb;
+}
+
+.nav-link.active {
+  background-color: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+}
+
+/* Modal Styles */
+.modal-bg {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  align-items: center; justify-content: center;
+}
+
+.modal-bg.active { display: flex; }
+
+.modal-content {
+  background: #fff !important;
+  border-radius: 16px;
+  padding: 1.2rem 1.2rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  position: relative;
+  animation: fadeIn 0.3s;
+  z-index: 10000;
+  pointer-events: auto !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Blinking animation for Book Now button */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.blink {
+  animation: blink 1s infinite;
+}
+
+/* Info card hover effects */
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card:hover {
+  color: white;
+}
+
+.card.visit:hover {
+  background: linear-gradient(135deg,#0b1c3f,#2563eb);
+}
+
+.card.email:hover {
+  background: linear-gradient(135deg,#2563eb,#00c6ff);
+}
+
+.card.call:hover {
+  background: linear-gradient(135deg,#00c6ff,#2dd4bf);
+}
+
+.card.hours:hover {
+  background: linear-gradient(135deg,#2dd4bf,#f59e42);
+}
+
+/* Image hover zoom and overlay */
+.image-box {
+  overflow: hidden;
+  border-radius: 14px;
+  position: relative;
+  cursor: pointer;
+}
+
+.image-box img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+
+.image-box:hover img {
+  transform: scale(1.08);
+}
+
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  color: white;
+  padding: 15px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.image-box:hover .image-overlay {
+  opacity: 1;
+}
+
+/* Dark mode styles */
+body.dark {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+body.dark nav {
+  background-color: #2d2d2d !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+}
+
+body.dark .nav-link {
+  color: #ffffff !important;
+}
+
+body.dark .nav-link.active {
+  background-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+body.dark .modal-content {
+  background-color: #333 !important;
+  color: #fff !important;
+}
+
+body.dark .modal-content input,
+body.dark .modal-content select,
+body.dark .modal-content textarea {
+  background-color: #444 !important;
+  color: #fff !important;
+  border-color: #555 !important;
+}
+
+body.dark .card {
+  background-color: #2d2d2d !important;
+  color: #fff !important;
+}
+
+body.dark .card:hover {
+  background: linear-gradient(135deg, #1e3a8a, #1e40af) !important;
+}
+
+body.dark footer {
+  background-color: #0f172a !important;
+}

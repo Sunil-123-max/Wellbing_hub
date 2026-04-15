@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Our Services - Wellbeing Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; font-family: 'Poppins', sans-serif; background:#f8fafc; }
+    .page-header { padding-top: 86px; }
+    .hero-section {
+      background: linear-gradient(135deg,#0f172a,#0b2446);
+      color:#fff;
+      position: relative;
+      padding: 42px 24px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.28);
+    }
+    .hero-section h1 { margin:0; font-size: 2.6rem; letter-spacing: 0.04rem; }
+    .hero-section p { margin:10px 0 0; font-size:1.05rem; color:#cbd5e1; }
+    .hero-badge { display:inline-block; background:rgba(37,99,235,0.2); border:1px solid #3b82f6; color:#60a5fa; padding: 8px 14px; border-radius:999px; font-weight:600; font-size:.85rem; margin-bottom:16px; }
+    .hero-stats { margin-top:18px; display:flex; flex-wrap:wrap; gap:12px; }
+    .hero-metric { background:rgba(255,255,255,0.16); border-radius:999px; padding: 8px 16px; font-weight:700; font-size:.9rem; }
+    .stat-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1180px; margin: 28px auto 0; padding:0 16px; }
+    .stat-card { background:#fff; border-radius:14px; padding:24px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.05); }
+    .stat-card .stat-number { font-size:2.4rem; color:#1d4ed8; font-weight:900; }
+    .stat-card .stat-label { color:#6b7280; font-weight:500; }
+    .services-container { max-width:1100px; margin: 40px auto; padding: 0 16px; }
+    .service-gallery { max-width:1100px; margin: 20px auto 10px; padding: 0 16px; }
+    .service-gallery-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:18px; }
+    .service-image-card {
+      background:#fff;
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+      transition:transform .25s ease, box-shadow .25s ease;
+      cursor:pointer;
+    }
+    .service-image-card:hover {
+      transform:translateY(-5px);
+      box-shadow:0 12px 24px rgba(0,0,0,0.14);
+    }
+    .service-image-card img {
+      width:100%;
+      height:180px;
+      object-fit:cover;
+      display:block;
+    }
+    .service-image-body { padding:16px; }
+    .service-image-body h3 { margin:0 0 8px; font-size:1.05rem; color:#0f172a; }
+    .service-image-body p { margin:0; color:#64748b; font-size:.93rem; line-height:1.5; }
+    .accordion { background:#fff; border-radius:14px; margin-bottom:14px; box-shadow:0 4px 12px rgba(0,0,0,0.06); overflow:hidden; transition:all .25s ease; }
+    .accordion:hover { box-shadow:0 6px 16px rgba(0,0,0,0.12); }
+    .accordion-header { padding:20px; display:flex; align-items:center; gap:14px; cursor:pointer; transition:background .2s ease; border:1px solid #e5e7eb; }
+    .accordion:hover .accordion-header { background:#f9fafb; }
+    .accordion-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.6rem; }
+    .accordion-header .icon-brain { background:#dbeafe; }
+    .accordion-header .icon-fitness { background:#fce7f3; }
+    .accordion-header .icon-family { background:#fef3c7; }
+    .accordion-header .icon-community { background:#dcfce7; }
+    .accordion-header .icon-events { background:#e9d5ff; }
+    .accordion-header .icon-wellbeing { background:#fecaca; }
+    .accordion-title { flex:1; }
+    .accordion-title h3 { margin:0; font-size:1.15rem; color:#0f172a; }
+    .accordion-title p { margin:4px 0 0; color:#6b7280; font-size:.93rem; }
+    .accordion-toggle { width:28px; height:28px; display:flex; align-items:center; justify-content:center; background:#e5e7eb; border-radius:6px; transition:transform .3s ease; }
+    .accordion.active .accordion-toggle { transform:rotate(180deg); }
+    .accordion-content { max-height:0; overflow:hidden; transition:max-height .35s ease, padding .35s ease; }
+    .accordion.active .accordion-content { max-height:600px; }
+    .accordion-body { padding:0 20px 20px; color:#475569; line-height:1.6; }
+    .footer { background:#0b1224; color:#cbd5e1; padding:30px 16px; border-top:2px solid #1e2b52; }
+    .footer-inner { max-width:1100px; margin:auto; display:grid; grid-template-columns:repeat(3,minmax(220px,1fr)); gap:24px; }
+    .footer h4 { margin-top:0; color:#fff; }
+    .footer a { color:#cbd5e1; text-decoration:none; }
+    .footer a:hover { color:#fff; }
+    .footer-bottom { text-align:center; margin-top:20px; font-size:.86rem; color:#94a3b8; }
+    
+    @media(max-width:1024px){ .stat-cards { grid-template-columns:1fr; } .hero-section { padding:28px 16px; } .hero-section h1 { font-size:2rem; } }
+    @media(max-width:640px){ .hero-section h1 { font-size:1.6rem; } }
+  </style>
+  </style>
+</head>
+<body>
+<!-- HERO SECTION FOR SERVICES (like homepage) -->
+<section style="position:relative;min-height:480px;display:flex;align-items:center;justify-content:center;background:#0f172a;overflow:hidden;">
+  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80" alt="Services Hero" style="position:absolute;top:0;left:0;width:100vw;height:100%;object-fit:cover;z-index:1;filter:brightness(0.55);">
+  <div style="position:relative;z-index:2;max-width:900px;width:100%;padding:0 24px;text-align:left;">
+    <h1 style="font-size:3.2rem;font-weight:900;line-height:1.1;color:#fff;margin-bottom:0.5rem;letter-spacing:0.01em;">
+      <span style="color:#fff;">Our</span> <span style="color:#3b82f6;">Services</span>
+    </h1>
+    <p style="font-size:1.3rem;color:#e0e7ef;font-weight:500;max-width:600px;margin-bottom:2.2rem;">
+      Explore our comprehensive range of health, wellbeing, and community services. All services are free and open to Coventry residents. Click on each category below to discover full details.
+    </p>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;">
+      <span style="background:rgba(31,41,55,0.7);color:#fff;padding:12px 28px;border-radius:999px;font-weight:700;font-size:1.1rem;">50+ Services</span>
+      <span style="background:rgba(31,41,55,0.7);color:#fff;padding:12px 28px;border-radius:999px;font-weight:700;font-size:1.1rem;">100% Free</span>
+      <span style="background:rgba(31,41,55,0.7);color:#fff;padding:12px 28px;border-radius:999px;font-weight:700;font-size:1.1rem;">All Ages Welcome</span>
+    </div>
+  </div>
+</section>
+
+
+<nav class="bg-white shadow-sm w-full fixed top-0 left-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-3"><img src="logo.png" width="55" height="55" alt="logo"><span class="text-xl font-extrabold">Wellbeing Hub</span></a>
+
+    <div class="hidden md:flex items-center gap-8 text-slate-700 font-medium">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link">About Us</a>
+      <a href="services.html" class="nav-link">Services</a>
+      <a href="events.html" class="nav-link">Events</a>
+      <a href="news.html" class="nav-link">News</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+      <a href="booking.html" class="ml-4 bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">Book Now</a>
+    </div>
+
+    <button id="darkModeToggle" class="text-2xl px-3" aria-label="Toggle dark mode">🌙</button>
+  </div>
+</nav>
+
+<div class="hero-section">
+</div>
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-number">50+</div>
+    <div class="stat-label">Services</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">100%</div>
+    <div class="stat-label">Free</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">All Ages</div>
+    <div class="stat-label">Welcome</div>
+  </div>
+</div>
+
+<div class="quick-services" style="max-width:1100px; margin: 40px auto 50px; padding:0 16px;">
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+    <div style="background:#fff; border-radius:12px; padding:24px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition:all .25s ease;" onclick="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.06)'; this.style.transform='translateY(0)'">
+      <div style="font-size:2.8rem; margin-bottom:12px;">🩺</div>
+      <h3 style="margin:0 0 8px; font-size:1.1rem; color:#0f172a; font-weight:600;">Health Checkups</h3>
+      <p style="margin:0; color:#6b7280; font-size:.95rem;">Free basic health screenings and advice from NHS professionals.</p>
+    </div>
+    <div style="background:#fff; border-radius:12px; padding:24px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition:all .25s ease;" onclick="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.06)'; this.style.transform='translateY(0)'">
+      <div style="font-size:2.8rem; margin-bottom:12px;">🧘‍♂️</div>
+      <h3 style="margin:0 0 8px; font-size:1.1rem; color:#0f172a; font-weight:600;">Wellbeing Workshops</h3>
+      <p style="margin:0; color:#6b7280; font-size:.95rem;">Join group sessions on mindfulness, stress relief, and healthy living.</p>
+    </div>
+    <div style="background:#fff; border-radius:12px; padding:24px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition:all .25s ease;" onclick="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.06)'; this.style.transform='translateY(0)'">
+      <div style="font-size:2.8rem; margin-bottom:12px;">🤝</div>
+      <h3 style="margin:0 0 8px; font-size:1.1rem; color:#0f172a; font-weight:600;">Community Support</h3>
+      <p style="margin:0; color:#6b7280; font-size:.95rem;">Access local support groups and connect with others in your area.</p>
+    </div>
+    <div style="background:#fff; border-radius:12px; padding:24px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition:all .25s ease;" onclick="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.06)'; this.style.transform='translateY(0)'">
+      <div style="font-size:2.8rem; margin-bottom:12px;">👨‍👩‍👧‍👦</div>
+      <h3 style="margin:0 0 8px; font-size:1.1rem; color:#0f172a; font-weight:600;">Family Activities</h3>
+      <p style="margin:0; color:#6b7280; font-size:.95rem;">Fun and educational activities for children and families every week.</p>
+    </div>
+    <div style="background:#fff; border-radius:12px; padding:24px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition:all .25s ease;" onclick="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.06)'; this.style.transform='translateY(0)'">
+      <div style="font-size:2.8rem; margin-bottom:12px;">🍎</div>
+      <h3 style="margin:0 0 8px; font-size:1.1rem; color:#0f172a; font-weight:600;">Nutrition Advice</h3>
+      <p style="margin:0; color:#6b7280; font-size:.95rem;">Get personalized nutrition tips and healthy eating plans.</p>
+    </div>
+    <div style="background:#fff; border-radius:12px; padding:24px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition:all .25s ease;" onclick="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.06)'; this.style.transform='translateY(0)'">
+      <div style="font-size:2.8rem; margin-bottom:12px;">🏃‍♀️</div>
+      <h3 style="margin:0 0 8px; font-size:1.1rem; color:#0f172a; font-weight:600;">Fitness Classes</h3>
+      <p style="margin:0; color:#6b7280; font-size:.95rem;">Join free fitness classes for all ages and abilities.</p>
+    </div>
+    <div style="background:#fff; border-radius:12px; padding:24px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition:all .25s ease;" onclick="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.06)'; this.style.transform='translateY(0)'">
+      <div style="font-size:2.8rem; margin-bottom:12px;">💻</div>
+      <h3 style="margin:0 0 8px; font-size:1.1rem; color:#0f172a; font-weight:600;">Digital Support</h3>
+      <p style="margin:0; color:#6b7280; font-size:.95rem;">Practical help with online forms, emails, job searches, and internet safety.</p>
+    </div>
+    <div style="background:#fff; border-radius:12px; padding:24px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition:all .25s ease;" onclick="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.06)'; this.style.transform='translateY(0)'">
+      <div style="font-size:2.8rem; margin-bottom:12px;">🧓</div>
+      <h3 style="margin:0 0 8px; font-size:1.1rem; color:#0f172a; font-weight:600;">Senior Wellness</h3>
+      <p style="margin:0; color:#6b7280; font-size:.95rem;">Friendly social sessions, mobility support, and wellbeing advice for older adults.</p>
+    </div>
+    <div style="background:#fff; border-radius:12px; padding:24px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition:all .25s ease;" onclick="this.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.06)'; this.style.transform='translateY(0)'">
+      <div style="font-size:2.8rem; margin-bottom:12px;">🎓</div>
+      <h3 style="margin:0 0 8px; font-size:1.1rem; color:#0f172a; font-weight:600;">Skills & Training</h3>
+      <p style="margin:0; color:#6b7280; font-size:.95rem;">Short courses and guidance to build confidence, employability, and life skills.</p>
+    </div>
+  </div>
+</div>
+
+<section class="service-gallery">
+  <div style="display:flex; justify-content:space-between; align-items:end; gap:16px; flex-wrap:wrap; margin-bottom:18px;">
+    <div>
+      <h2 style="margin:0; font-size:1.7rem; color:#0f172a; font-weight:800;">More Services We Offer</h2>
+      <p style="margin:6px 0 0; color:#64748b; max-width:700px;">Explore even more support available at the hub, from counselling and community cafés to youth activities and digital help.</p>
+    </div>
+  </div>
+  <div class="service-gallery-grid">
+    <div class="service-image-card" data-target="mental-health-service" tabindex="0" role="button" aria-label="Open Mental Health Support section">
+      <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80" alt="Counselling support session">
+      <div class="service-image-body">
+        <h3>Counselling & Emotional Support</h3>
+        <p>One-to-one guidance and safe listening spaces to support emotional wellbeing and confidence.</p>
+      </div>
+    </div>
+    <div class="service-image-card" data-target="fitness-service" tabindex="0" role="button" aria-label="Open Physical Activity and Fitness section">
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Outdoor walking group">
+      <div class="service-image-body">
+        <h3>Walking & Nature Groups</h3>
+        <p>Gentle outdoor sessions that combine movement, fresh air, and social connection.</p>
+      </div>
+    </div>
+    <div class="service-image-card" data-target="community-service" tabindex="0" role="button" aria-label="Open Community Groups and Social Clubs section">
+      <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80" alt="Community team helping residents">
+      <div class="service-image-body">
+        <h3>Community Advice Desk</h3>
+        <p>Friendly support with local services, referrals, appointments, and everyday wellbeing needs.</p>
+      </div>
+    </div>
+    <div class="service-image-card" data-target="employment-service" tabindex="0" role="button" aria-label="Open Employment and Digital Inclusion section">
+      <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=800" alt="Group skills workshop">
+      <div class="service-image-body">
+        <h3>Employment & Skills Support</h3>
+        <p>CV help, interview practice, and confidence-building sessions for local job seekers.</p>
+      </div>
+    </div>
+    <div class="service-image-card" data-target="wellbeing-service" tabindex="0" role="button" aria-label="Open Wellbeing Resources section">
+      <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800" alt="Healthy living session">
+      <div class="service-image-body">
+        <h3>Healthy Living Advice</h3>
+        <p>Support with nutrition, lifestyle habits, and personal wellbeing goals for all ages.</p>
+      </div>
+    </div>
+    <div class="service-image-card" data-target="family-service" tabindex="0" role="button" aria-label="Open Family Support section">
+      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=800" alt="Youth group activity">
+      <div class="service-image-body">
+        <h3>Youth & Teen Activities</h3>
+        <p>Creative clubs, social activities, and positive spaces for young people to connect and grow.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="services-container">
+  <div class="accordion" id="mental-health-service">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div class="accordion-icon icon-brain">🧠</div>
+      <div class="accordion-title">
+        <h3>Mental Health Support</h3>
+        <p>Access free, confidential counselling, drop-in sessions, and peer support groups for emotional wellbeing…</p>
+      </div>
+      <div class="accordion-toggle">▼</div>
+    </div>
+    <div class="accordion-content">
+      <div class="accordion-body">
+        <strong>Full Details:</strong><br><br>
+        Our mental health support services include:
+        <ul style="margin:10px 0; padding-left:20px;">
+          <li>Free confidential counselling (1-to-1 sessions with trained therapists)</li>
+          <li>Drop-in crisis support and emotional first aid</li>
+          <li>Peer support groups for depression, anxiety, and stress</li>
+          <li>Mindfulness and self-care workshops</li>
+          <li>Digital mental health resources and apps</li>
+        </ul>
+        All services are provided by NHS-trained professionals and completely confidential. No referral needed—just walk in or call to book.
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion" id="fitness-service">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div class="accordion-icon icon-fitness">🏃</div>
+      <div class="accordion-title">
+        <h3>Physical Activity & Fitness</h3>
+        <p>Stay active with our diverse range of fitness classes, walking groups, and adapted sports programmes…</p>
+      </div>
+      <div class="accordion-toggle">▼</div>
+    </div>
+    <div class="accordion-content">
+      <div class="accordion-body">
+        <strong>Full Details:</strong><br><br>
+        We offer a variety of physical activities for all fitness levels:
+        <ul style="margin:10px 0; padding-left:20px;">
+          <li>Weekly yoga and Pilates classes (beginners to advanced)</li>
+          <li>Walking groups exploring local parks and trails</li>
+          <li>Strength and mobility training for older adults</li>
+          <li>Swimming sessions at discounted community rates</li>
+          <li>Tai Chi and martial arts for balance and confidence</li>
+          <li>Adapted sports and activities for people with disabilities</li>
+        </ul>
+        Classes run multiple times per week. All instructors are certified and trained to support mixed-ability groups.
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion" id="family-service">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div class="accordion-icon icon-family">👨‍👩‍👧‍👦</div>
+      <div class="accordion-title">
+        <h3>Family Support</h3>
+        <p>Comprehensive parenting workshops, childcare advice, and family-friendly events in a welcoming, safe…</p>
+      </div>
+      <div class="accordion-toggle">▼</div>
+    </div>
+    <div class="accordion-content">
+      <div class="accordion-body">
+        <strong>Full Details:</strong><br><br>
+        Our family services support parents and carers of all backgrounds:
+        <ul style="margin:10px 0; padding-left:20px;">
+          <li>Parenting classes covering discipline, communication, and emotional health</li>
+          <li>Childcare advice and early years development guidance</li>
+          <li>Baby groups and playgroups for under-5s</li>
+          <li>School-age events, camps, and holiday activities</li>
+          <li>Financial support and benefits advice for families</li>
+          <li>Mental health support for parents experiencing stress or burnout</li>
+        </ul>
+        Safe, inclusive spaces designed for all family types. Childminding available during many sessions.
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion" id="community-service">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div class="accordion-icon icon-community">👥</div>
+      <div class="accordion-title">
+        <h3>Community Groups & Social Clubs</h3>
+        <p>Join social clubs, volunteer networks, and peer support groups to build meaningful connections. Comb…</p>
+      </div>
+      <div class="accordion-toggle">▼</div>
+    </div>
+    <div class="accordion-content">
+      <div class="accordion-body">
+        <strong>Full Details:</strong><br><br>
+        Build community connections and reduce isolation through:
+        <ul style="margin:10px 0; padding-left:20px;">
+          <li>Coffee mornings and social clubs for all ages</li>
+          <li>Volunteer opportunities in the community (hands-on roles)</li>
+          <li>Skill-sharing and hobby groups (art, crafts, reading, etc.)</li>
+          <li>Lunch clubs with nutritious meals and conversation</li>
+          <li>Digital skills cafes to learn new technology</li>
+          <li>Peer mentoring and buddy systems</li>
+        </ul>
+        Weekly meetings at the Hub. New members always welcome. Free snacks and transport support available.
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div class="accordion-icon icon-events">📅</div>
+      <div class="accordion-title">
+        <h3>Events & Workshops</h3>
+        <p>Regular community events, educational talks, and hands-on skill-building sessions. From seasonal cel…</p>
+      </div>
+      <div class="accordion-toggle">▼</div>
+    </div>
+    <div class="accordion-content">
+      <div class="accordion-body">
+        <strong>Full Details:</strong><br><br>
+        Events and workshops running throughout the year:
+        <ul style="margin:10px 0; padding-left:20px;">
+          <li>Seasonal celebrations and community festivals</li>
+          <li>Educational workshops on health, finance, and wellbeing topics</li>
+          <li>Cooking classes and nutrition masterclasses</li>
+          <li>Digital skills training and tech support classes</li>
+          <li>Arts and crafts workshops for all ages</li>
+          <li>Outdoor activities and nature appreciation events</li>
+        </ul>
+        Most events are free or low-cost. Family-friendly. Check our Events page for the full calendar.
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion" id="wellbeing-service">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div class="accordion-icon icon-wellbeing">❤️</div>
+      <div class="accordion-title">
+        <h3>Wellbeing Resources</h3>
+        <p>Access self-help guides, toolkits, and digital resources for personal wellbeing at any age. Our reso…</p>
+      </div>
+      <div class="accordion-toggle">▼</div>
+    </div>
+    <div class="accordion-content">
+      <div class="accordion-body">
+        <strong>Full Details:</strong><br><br>
+        Take control of your wellbeing with our comprehensive resources:
+        <ul style="margin:10px 0; padding-left:20px;">
+          <li>Online self-help guides for anxiety, depression, sleep, and stress</li>
+          <li>Library of wellbeing podcasts and video tutorials</li>
+          <li>Downloadable worksheets and activity planners</li>
+          <li>Apps and digital tools for mental health, fitness, and nutrition</li>
+          <li>Wellness newsletter with tips and local updates</li>
+          <li>1-to-1 wellbeing coaching (limited availability)</li>
+        </ul>
+        All resources are free and downloadable from our website. Regular updates and new content added monthly.
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion" id="employment-service">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div class="accordion-icon icon-community">💼</div>
+      <div class="accordion-title">
+        <h3>Employment & Digital Inclusion</h3>
+        <p>Support with job searching, online applications, CV writing, and digital confidence for everyday life…</p>
+      </div>
+      <div class="accordion-toggle">▼</div>
+    </div>
+    <div class="accordion-content">
+      <div class="accordion-body">
+        <strong>Full Details:</strong><br><br>
+        This service helps residents build confidence with work and technology:
+        <ul style="margin:10px 0; padding-left:20px;">
+          <li>CV writing and interview coaching</li>
+          <li>Support with online job applications and email setup</li>
+          <li>Digital basics for phones, laptops, and tablets</li>
+          <li>Online safety and scam awareness guidance</li>
+          <li>Signposting to local colleges and training providers</li>
+        </ul>
+        Friendly one-to-one help is available weekly with no previous experience needed.
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <div class="accordion-icon icon-family">🌱</div>
+      <div class="accordion-title">
+        <h3>Older Adults & Independent Living</h3>
+        <p>Practical and social support designed to help older residents stay active, connected, and independent…</p>
+      </div>
+      <div class="accordion-toggle">▼</div>
+    </div>
+    <div class="accordion-content">
+      <div class="accordion-body">
+        <strong>Full Details:</strong><br><br>
+        Our older adults service includes:
+        <ul style="margin:10px 0; padding-left:20px;">
+          <li>Gentle mobility and chair-based exercise classes</li>
+          <li>Tea mornings and social connection groups</li>
+          <li>Falls prevention and healthy ageing information</li>
+          <li>Help with transport, appointments, and local signposting</li>
+          <li>Wellbeing check-ins for people living alone</li>
+        </ul>
+        Sessions are relaxed, welcoming, and tailored to different mobility and support needs.
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <h4>Wellbeing Hub</h4>
+      <p>Supporting residents with access to local health and wellbeing services, events, and community networks.</p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul style="padding-left:0; list-style:none; margin:0;">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="news.html">News</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <p>123 Community Lane, Coventry CV1 2AB</p>
+      <p><a href="mailto:contact@wellbeinghub.org">contact@wellbeinghub.org</a></p>
+      <p>024 7612 3456</p>
+    </div>
+  </div>
+  <div class="footer-bottom">&copy; 2026 Wellbeing Hub. All rights reserved.</div>
+</footer>
+
+<script>
+function toggleAccordion(header) {
+  const accordion = header.parentElement;
+  accordion.classList.toggle('active');
+}
+
+document.querySelectorAll('.service-image-card[data-target]').forEach(function(card) {
+  function openServiceSection() {
+    const target = document.getElementById(card.getAttribute('data-target'));
+    if (!target) return;
+
+    document.querySelectorAll('.accordion').forEach(function(item) {
+      if (item !== target) item.classList.remove('active');
+    });
+
+    target.classList.add('active');
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    target.style.outline = '3px solid #60a5fa';
+    target.style.outlineOffset = '4px';
+
+    setTimeout(function() {
+      target.style.outline = '';
+      target.style.outlineOffset = '';
+    }, 1600);
+  }
+
+  card.addEventListener('click', openServiceSection);
+  card.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openServiceSection();
+    }
+  });
+});
+
+});
+</script>
+<script src="script.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

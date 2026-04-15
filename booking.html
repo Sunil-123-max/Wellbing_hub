@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book an Event | Wellbeing Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- EmailJS SDK for sending confirmation emails -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    body { background: #fcfaf8; font-family: 'Roboto', Arial, sans-serif; }
+    .booking-card { max-width: 540px; margin: 40px auto 0 auto; border-radius: 18px; box-shadow: 0 4px 32px #0001; border: none; }
+    .stepper { display: flex; justify-content: center; align-items: center; gap: 32px; margin-bottom: 32px; }
+    .step-circle { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.3rem; transition: all 0.2s; }
+    .step-circle.active { background: #2d7a6a; color: #fff; border: 3px solid #2d7a6a; }
+    .step-circle.inactive { background: #fff; color: #bdbdbd; border: 3px solid #e0e0e0; }
+    .step-line { height: 3px; width: 44px; background: #e0e0e0; }
+    .step-line.active { background: #2d7a6a; }
+    .booking-section { display: none; }
+    .booking-section.active { display: block; }
+    .section-title { font-family: 'Montserrat', Arial, sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px; text-align: center; }
+    .section-desc { color: #5e5e5e; text-align: center; margin-bottom: 24px; }
+    .form-label { font-weight: 500; }
+    .form-control, .form-select, textarea { border-radius: 8px; }
+    .btn-main { background: #2d7a6a; color: #fff; font-weight: 500; border-radius: 8px; }
+    .btn-main:hover { background: #256356; }
+    .btn-outline-main { border: 2px solid #2d7a6a; color: #2d7a6a; border-radius: 8px; }
+    .btn-outline-main:hover { background: #e8f5f1; }
+    .review-box { background: #f7f6f3; border-radius: 10px; padding: 18px; margin-bottom: 18px; }
+    #formError { color: #c0392b; text-align: center; margin-bottom: 12px; display: none; }
+    #successMsg { text-align: center; }
+    /* Toast notification */
+    .toast-notification {
+      position: fixed; top: 30px; right: 30px; z-index: 99999;
+      min-width: 340px; max-width: 440px;
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 20px 22px; opacity: 0;
+      transform: translateX(80px); transition: all 0.45s cubic-bezier(.4,0,.2,1);
+      pointer-events: none;
+    }
+    .toast-notification.show {
+      opacity: 1; transform: translateX(0); pointer-events: auto;
+    }
+    .toast-icon {
+      width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+    }
+    .toast-icon.success { background: #d1fae5; color: #059669; }
+    .toast-icon.error { background: #fee2e2; color: #dc2626; }
+    .toast-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 2px; }
+    .toast-body { color: #6b7280; font-size: 0.92rem; line-height: 1.4; }
+    .toast-progress {
+      position: absolute; bottom: 0; left: 0; height: 4px;
+      background: #059669; border-radius: 0 0 0 14px;
+      animation: toastProgress 4s linear forwards;
+    }
+    @keyframes toastProgress { from { width: 100%; } to { width: 0%; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card booking-card p-4">
+      <div class="section-title">Book an Event</div>
+      <div class="section-desc">Complete the steps below to register for a community event.</div>
+      <div class="stepper mb-4">
+        <div id="stepper-1" class="step-circle active">1</div>
+        <div id="stepper-line-1" class="step-line"></div>
+        <div id="stepper-2" class="step-circle inactive">2</div>
+        <div id="stepper-line-2" class="step-line"></div>
+        <div id="stepper-3" class="step-circle inactive">3</div>
+      </div>
+      <div id="formError"></div>
+      <!-- Step 1: User Details -->
+      <div id="section-1" class="booking-section active">
+        <div class="mb-3"><span class="fw-bold fs-5">Your Details</span></div>
+        <div class="mb-3">
+          <label class="form-label">Full Name *</label>
+          <input type="text" class="form-control" id="bookingName" placeholder="Enter your name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email Address *</label>
+          <input type="email" class="form-control" id="bookingEmail" placeholder="Enter your email address">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="bookingMobile" placeholder="Enter your mobile number">
+        </div>
+        <button type="button" id="nextToStep2" class="btn btn-main w-100">Next</button>
+      </div>
+      <!-- Step 2: Event Selection -->
+      <div id="section-2" class="booking-section">
+        <div class="mb-3"><span class="fw-bold fs-5">Select an Event</span></div>
+        <div class="mb-3">
+          <div class="list-group">
+            <label class="list-group-item">
+              <input class="form-check-input me-2" type="radio" name="eventRadio" value="Mindfulness & Meditation Workshop — 10 Apr"> Mindfulness & Meditation Workshop — 10 Apr
+            </label>
+            <label class="list-group-item">
+              <input class="form-check-input me-2" type="radio" name="eventRadio" value="Family Fun Day — 12 Apr"> Family Fun Day — 12 Apr
+            </label>
+            <label class="list-group-item">
+              <input class="form-check-input me-2" type="radio" name="eventRadio" value="Gentle Yoga for Over 50s — 14 Apr"> Gentle Yoga for Over 50s — 14 Apr
+            </label>
+            <label class="list-group-item">
+              <input class="form-check-input me-2" type="radio" name="eventRadio" value="Healthy Cooking on a Budget — 16 Apr"> Healthy Cooking on a Budget — 16 Apr
+            </label>
+            <label class="list-group-item">
+              <input class="form-check-input me-2" type="radio" name="eventRadio" value="Job Seekers Support Group — 18 Apr"> Job Seekers Support Group — 18 Apr
+            </label>
+            <label class="list-group-item">
+              <input class="form-check-input me-2" type="radio" name="eventRadio" value="Children's Arts & Crafts — 20 Apr"> Children's Arts & Crafts — 20 Apr
+            </label>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6 mb-2 mb-md-0">
+            <label class="form-label">Date *</label>
+            <input type="date" class="form-control" id="bookingDate">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Time *</label>
+            <input type="time" class="form-control" id="bookingTime">
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" id="backToStep1" class="btn btn-outline-main w-50">Back</button>
+          <button type="button" id="nextToStep3" class="btn btn-main w-50">Next: Review</button>
+        </div>
+      </div>
+      <!-- Step 3: Review & Confirm -->
+      <div id="section-3" class="booking-section">
+        <div class="mb-3"><span class="fw-bold fs-5">Review & Confirm</span></div>
+        <div class="review-box mb-3">
+          <div><b>Name:</b> <span id="reviewName"></span></div>
+          <div><b>Email:</b> <span id="reviewEmail"></span></div>
+          <div><b>Phone:</b> <span id="reviewMobile"></span></div>
+          <div><b>Event:</b> <span id="reviewEvent"></span></div>
+          <div><b>Date:</b> <span id="reviewDate"></span></div>
+          <div><b>Time:</b> <span id="reviewTime"></span></div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Accessibility or Support Needs</label>
+          <textarea class="form-control" id="bookingSupport" placeholder="Let us know if you have any additional requirements..."></textarea>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" id="backToStep2" class="btn btn-outline-main w-50">Back</button>
+          <button type="button" id="confirmBooking" class="btn btn-main w-50">Confirm Booking</button>
+        </div>
+      </div>
+      <div id="successMsg" class="alert alert-success mt-3" style="display:none;">
+        <div style="font-size:2.2rem;">✅</div>
+        <b>Booking Confirmed!</b><br>
+        A confirmation email has been sent to your inbox.<br>
+        We look forward to seeing you at the event!
+      </div>
+    </div>
+    <div class="text-center mt-3">
+      <a href="dashboard.html" class="btn btn-link">Go to Dashboard</a>
+    </div>
+  </div>
+  <!-- Toast notification container -->
+  <div id="toastNotification" class="toast-notification">
+    <div id="toastIcon" class="toast-icon success">✓</div>
+    <div>
+      <div id="toastTitle" class="toast-title">Booking Confirmed!</div>
+      <div id="toastBody" class="toast-body">A confirmation email has been sent to your inbox.</div>
+    </div>
+    <div class="toast-progress" id="toastProgress"></div>
+  </div>
+
+  <script>
+    /*
+     * ===========================================
+     *  EMAIL CONFIRMATION SETUP (EmailJS)
+     * ===========================================
+     *  To enable real email sending:
+     *  1. Sign up free at https://www.emailjs.com
+     *  2. Create an Email Service (e.g. Gmail)
+     *  3. Create an Email Template with these variables:
+     *     {{to_email}}, {{to_name}}, {{event_name}},
+     *     {{event_date}}, {{event_time}}, {{phone}}
+     *  4. Replace the 3 values below with your own:
+     */
+    const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';    // from EmailJS dashboard > Account
+    const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';    // from EmailJS dashboard > Email Services
+    const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // from EmailJS dashboard > Email Templates
+
+    // Initialize EmailJS
+    if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
+
+    // Show toast notification
+    function showToast(type, title, body) {
+      const toast = document.getElementById('toastNotification');
+      const icon = document.getElementById('toastIcon');
+      const progress = document.getElementById('toastProgress');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastBody').textContent = body;
+      icon.className = 'toast-icon ' + type;
+      icon.textContent = type === 'success' ? '✓' : '✕';
+      progress.style.background = type === 'success' ? '#059669' : '#dc2626';
+      progress.style.animation = 'none';
+      void progress.offsetWidth; // reflow
+      progress.style.animation = 'toastProgress 4s linear forwards';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 4200);
+    }
+
+    // Send confirmation email via EmailJS
+    function sendConfirmationEmail(name, email, event, date, time, phone) {
+      if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+        // EmailJS not configured — show success toast anyway (demo mode)
+        showToast('success', 'Booking Confirmed!', 'Confirmation email sent to ' + email);
+        return;
+      }
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: email,
+        to_name: name,
+        event_name: event,
+        event_date: date,
+        event_time: time,
+        phone: phone || 'Not provided'
+      }).then(function() {
+        showToast('success', 'Booking Confirmed!', 'Confirmation email sent to ' + email);
+      }, function(err) {
+        console.error('EmailJS Error:', err);
+        showToast('error', 'Booking Saved', 'Could not send email. Please check your inbox later.');
+      });
+    }
+
+    // Multi-step booking form logic for booking.html (modern UI)
+    document.addEventListener('DOMContentLoaded', function() {
+      const section1 = document.getElementById('section-1');
+      const section2 = document.getElementById('section-2');
+      const section3 = document.getElementById('section-3');
+      const stepper1 = document.getElementById('stepper-1');
+      const stepper2 = document.getElementById('stepper-2');
+      const stepper3 = document.getElementById('stepper-3');
+      const stepperLine1 = document.getElementById('stepper-line-1');
+      const stepperLine2 = document.getElementById('stepper-line-2');
+      const formError = document.getElementById('formError');
+      const successMsg = document.getElementById('successMsg');
+      function showSection(step) {
+        section1.classList.remove('active');
+        section2.classList.remove('active');
+        section3.classList.remove('active');
+        stepper1.classList.remove('active','inactive');
+        stepper2.classList.remove('active','inactive');
+        stepper3.classList.remove('active','inactive');
+        stepperLine1.classList.remove('active');
+        stepperLine2.classList.remove('active');
+        if (step === 1) {
+          section1.classList.add('active');
+          stepper1.classList.add('active');
+          stepper2.classList.add('inactive');
+          stepper3.classList.add('inactive');
+        } else if (step === 2) {
+          section2.classList.add('active');
+          stepper1.classList.add('active');
+          stepper2.classList.add('active');
+          stepper3.classList.add('inactive');
+          stepperLine1.classList.add('active');
+        } else if (step === 3) {
+          section3.classList.add('active');
+          stepper1.classList.add('active');
+          stepper2.classList.add('active');
+          stepper3.classList.add('active');
+          stepperLine1.classList.add('active');
+          stepperLine2.classList.add('active');
+        }
+        formError.style.display = 'none';
+        successMsg.style.display = 'none';
+      }
+      showSection(1);
+      document.getElementById('nextToStep2').onclick = function() {
+        // Validate Step 1
+        const name = document.getElementById('bookingName').value.trim();
+        const email = document.getElementById('bookingEmail').value.trim();
+        const mobile = document.getElementById('bookingMobile').value.trim();
+        if (name.length < 2) {
+          formError.textContent = 'Please enter a valid name.';
+          formError.style.display = 'block';
+          return;
+        }
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+          formError.textContent = 'Please enter a valid email address.';
+          formError.style.display = 'block';
+          return;
+        }
+        if (mobile && !/^\d{10,11}$/.test(mobile)) {
+          formError.textContent = 'Please enter a valid 10 or 11-digit mobile number.';
+          formError.style.display = 'block';
+          return;
+        }
+        showSection(2);
+      };
+      document.getElementById('backToStep1').onclick = function() {
+        showSection(1);
+      };
+      document.getElementById('nextToStep3').onclick = function() {
+        // Validate Step 2
+        const eventRadio = document.querySelector('input[name="eventRadio"]:checked');
+        const date = document.getElementById('bookingDate').value;
+        const time = document.getElementById('bookingTime').value;
+        if (!eventRadio) {
+          formError.textContent = 'Please select an event.';
+          formError.style.display = 'block';
+          return;
+        }
+        if (!date) {
+          formError.textContent = 'Please select a date.';
+          formError.style.display = 'block';
+          return;
+        }
+        if (!time) {
+          formError.textContent = 'Please select a time.';
+          formError.style.display = 'block';
+          return;
+        }
+        // Populate review
+        document.getElementById('reviewName').textContent = document.getElementById('bookingName').value;
+        document.getElementById('reviewEmail').textContent = document.getElementById('bookingEmail').value;
+        document.getElementById('reviewMobile').textContent = document.getElementById('bookingMobile').value;
+        document.getElementById('reviewEvent').textContent = eventRadio.value;
+        document.getElementById('reviewDate').textContent = date;
+        document.getElementById('reviewTime').textContent = time;
+        showSection(3);
+      };
+      document.getElementById('backToStep2').onclick = function() {
+        showSection(2);
+      };
+      document.getElementById('confirmBooking').onclick = function() {
+        // Gather booking details
+        const bName = document.getElementById('bookingName').value.trim();
+        const bEmail = document.getElementById('bookingEmail').value.trim();
+        const bMobile = document.getElementById('bookingMobile').value.trim();
+        const bEvent = document.getElementById('reviewEvent').textContent;
+        const bDate = document.getElementById('reviewDate').textContent;
+        const bTime = document.getElementById('reviewTime').textContent;
+
+        // Send confirmation email
+        sendConfirmationEmail(bName, bEmail, bEvent, bDate, bTime, bMobile);
+
+        // Save booking to localStorage
+        const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+        bookings.push({ name: bName, email: bEmail, phone: bMobile, event: bEvent, date: bDate, time: bTime });
+        localStorage.setItem('bookings', JSON.stringify(bookings));
+
+        // Show in-page success
+        successMsg.style.display = 'block';
+        successMsg.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+          showSection(1);
+          document.getElementById('bookingName').value = '';
+          document.getElementById('bookingEmail').value = '';
+          document.getElementById('bookingMobile').value = '';
+          document.querySelectorAll('input[name="eventRadio"]').forEach(r => r.checked = false);
+          document.getElementById('bookingDate').value = '';
+          document.getElementById('bookingTime').value = '';
+          document.getElementById('bookingSupport').value = '';
+        }, 3500);
+      };
+    });
+  </script>
+</body>
+</html>

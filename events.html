@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Events</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+  <!-- EmailJS SDK for sending confirmation emails -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    body { margin:0; font-family: 'Poppins', sans-serif; background:#f8fafc; }
+    .page-header { padding-top: 86px; }
+    .hero-section {
+      background: linear-gradient(135deg,#0f172a,#0b2446);
+      color:#fff;
+      position: relative;
+      padding: 42px 24px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.28);
+    }
+    .hero-section h1 { margin:0; font-size: 2.6rem; letter-spacing: 0.04rem; }
+    .hero-section p { margin:10px 0 0; font-size:1.05rem; color:#cbd5e1; }
+    .hero-stats { margin-top:18px; display:flex; flex-wrap:wrap; gap:12px; }
+    .hero-metric { background:rgba(255,255,255,0.16); border-radius:999px; padding: 8px 16px; font-weight:700; font-size:.9rem; }
+    .events-main { max-width: 1180px; margin: 32px auto 40px; display:grid; grid-template-columns: 300px minmax(0,1fr); gap:24px; padding:0 16px; }
+    .card, .featured-card, .calendar, .categories { background:#fff; border-radius:14px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
+    .calendar, .categories, .featured-card { padding:20px; }
+    .calendar h2, .categories h2, .featured-card h2 { margin:0 0 16px; font-size:1.2rem; color:#0f172a; }
+    .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; text-align:center; color:#111; }
+    .calendar-day { padding:10px 0; border-radius:8px; color:#111; font-weight:600; }
+    .calendar-day.today { background:#dbeafe; color:#111 !important; font-weight:700; }
+    .calendar-day:hover { background:#e2e8f0; cursor:pointer; color:#111; }
+    .category-pill { display:inline-flex; margin:4px 6px 4px 0; padding:6px 11px; border-radius:999px; background:#f3f4f6; color:#334155; font-weight:600; cursor:pointer; }
+    .category-pill.active { background:#1d4ed8; color:#fff; }
+    main { display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; }
+    .event-card { margin-bottom:0; border-radius:16px; overflow:hidden; transition:transform .25s ease, box-shadow .25s ease; position:relative; }
+    .event-card:hover { transform:translateY(-5px); box-shadow:0 16px 30px rgba(0,0,0,.22); }
+    .event-banner { width:100%; height:180px; object-fit:cover; transition:transform .6s ease, filter .35s ease; }
+    .event-card:hover .event-banner { transform:scale(1.12); filter: brightness(1.05); }
+    .event-overlay { position:absolute; top:0; left:0; right:0; height:220px; background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 75%, rgba(0,0,0,0) 100%); opacity:0; transition:opacity .35s ease; pointer-events:none; }
+    .event-card:hover .event-overlay { opacity:1; }
+    .event-content { padding:18px 18px 20px; }
+    .event-meta { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:12px; }
+    .event-tag { background:#e0f2fe; color:#0369a1; border-radius:999px; font-weight:700; padding:4px 10px; font-size:.78rem; }
+    .event-spots { background:#f1f5f9; color:#0f172a; border-radius:999px; padding:4px 10px; font-size:.78rem; }
+    .event-content h3 { margin:0 0 7px; font-size:1.45rem; color:#0f172a; }
+    .event-content p { margin:0 0 14px; color:#475569; line-height:1.5; }
+    .event-details { display:flex; flex-wrap:wrap; gap:10px; color:#0f172a; font-size:.93rem; }
+    .event-details span { display:flex; align-items:center; gap:6px; }
+    .event-btn { margin-top:14px; display:inline-block; border:none; background:#1d4ed8; color:white; padding:10px 16px; border-radius:10px; text-decoration:none; font-weight:700; transition:background .2s ease; }
+    .event-btn:hover { background:#1e40af; }
+    .upcoming-section {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #eff6ff, #f8fbff);
+      border: 1px solid #dbeafe;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
+    }
+    .upcoming-section h2 { margin: 0 0 6px; color: #0f172a; font-size: 1.4rem; }
+    .upcoming-section p { margin: 0; color: #475569; }
+    .upcoming-grid {
+      display: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .upcoming-grid.show {
+      display: grid;
+    }
+    .upcoming-toggle-btn {
+      margin-top: 0 !important;
+    }
+    .upcoming-item {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .upcoming-item img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .upcoming-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.12);
+      border-color: #93c5fd;
+    }
+    .upcoming-date {
+      display: inline-block;
+      margin-bottom: 8px;
+      color: #1d4ed8;
+      font-weight: 800;
+      font-size: 0.82rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .upcoming-item h3 { margin: 0 0 6px; color: #0f172a; font-size: 1.05rem; }
+    .upcoming-item p { color: #475569; font-size: 0.92rem; line-height: 1.45; }
+    .featured-image {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .footer { background:#0b1224; color:#cbd5e1; padding:30px 16px; border-top:2px solid #1e2b52; }
+    .footer-inner { max-width:1180px; margin:auto; display:grid; grid-template-columns:repeat(3,minmax(220px,1fr)); gap:24px; }
+    .footer h4 { margin-top:0; color:#fff; }
+    .footer a { color:#cbd5e1; text-decoration:none; }
+    .footer a:hover { color:#fff; }
+    .footer-bottom { text-align:center; margin-top:20px; font-size:.86rem; color:#94a3b8; }
+
+    @media(max-width:1024px){ .events-main { grid-template-columns:1fr; } main { grid-template-columns:repeat(2, 1fr); } .hero-section { padding:28px 16px; } .hero-section h1 { font-size:2rem; } .events-main { margin-top:20px; } }
+    @media(max-width:640px){ main { grid-template-columns:1fr; } .upcoming-grid { grid-template-columns:1fr; } .calendar-grid { grid-template-columns:repeat(7,1fr); font-size:.78rem; } .hero-metric { font-size:.8rem; } }
+
+    /* Booking Modal */
+    .booking-modal-bg {
+      display:none; position:fixed; z-index:9999;
+      top:0; left:0; width:100vw; height:100vh;
+      background:rgba(0,0,0,0.55);
+      align-items:center; justify-content:center;
+      animation: fadeInBg 0.3s ease;
+    }
+    .booking-modal-bg.active { display:flex; }
+    @keyframes fadeInBg { from{opacity:0}to{opacity:1} }
+    .booking-modal {
+      background:#fff; border-radius:18px; padding:32px 28px;
+      max-width:480px; width:94%; position:relative;
+      box-shadow:0 12px 48px rgba(0,0,0,0.22);
+      animation: slideUp 0.35s cubic-bezier(.4,0,.2,1);
+      max-height:90vh; overflow-y:auto;
+    }
+    @keyframes slideUp { from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)} }
+    .booking-modal h2 { margin:0 0 6px; font-size:1.5rem; font-weight:800; color:#0f172a; }
+    .booking-modal .event-name-display { color:#1d4ed8; font-weight:700; font-size:1.05rem; margin-bottom:18px; }
+    .booking-modal label { display:block; font-weight:600; margin-bottom:4px; color:#334155; font-size:0.92rem; }
+    .booking-modal input, .booking-modal textarea {
+      width:100%; padding:10px 14px; border:1.5px solid #e2e8f0; border-radius:10px;
+      font-size:0.95rem; margin-bottom:14px; outline:none; transition:border 0.2s;
+    }
+    .booking-modal input:focus, .booking-modal textarea:focus { border-color:#1d4ed8; }
+    .booking-modal textarea { height:60px; resize:vertical; }
+    .booking-modal .modal-actions { display:flex; gap:10px; margin-top:8px; }
+    .booking-modal .btn-confirm {
+      flex:1; padding:12px; border:none; border-radius:10px;
+      background:#1d4ed8; color:#fff; font-weight:700; font-size:1rem;
+      cursor:pointer; transition:background 0.2s;
+    }
+    .booking-modal .btn-confirm:hover { background:#1e40af; }
+    .booking-modal .btn-cancel {
+      flex:0.5; padding:12px; border:2px solid #e2e8f0; border-radius:10px;
+      background:#fff; color:#475569; font-weight:600; cursor:pointer; transition:background 0.2s;
+    }
+    .booking-modal .btn-cancel:hover { background:#f1f5f9; }
+    .modal-close-x {
+      position:absolute; top:14px; right:18px; background:none;
+      border:none; font-size:1.5rem; color:#94a3b8; cursor:pointer;
+    }
+    .modal-close-x:hover { color:#334155; }
+    .modal-error { color:#dc2626; font-size:0.88rem; margin-bottom:10px; display:none; }
+    .modal-success {
+      text-align:center; padding:24px 0;
+    }
+    .modal-success .check-circle {
+      width:64px; height:64px; border-radius:50%; background:#d1fae5;
+      display:inline-flex; align-items:center; justify-content:center;
+      font-size:2rem; color:#059669; margin-bottom:12px;
+    }
+    .modal-success h3 { color:#059669; margin:0 0 6px; font-size:1.25rem; }
+    .modal-success p { color:#6b7280; font-size:0.92rem; margin:0; }
+
+    /* Toast notification */
+    .toast-notification {
+      position:fixed; top:30px; right:30px; z-index:99999;
+      min-width:340px; max-width:440px;
+      background:#fff; border-radius:14px;
+      box-shadow:0 8px 40px rgba(0,0,0,0.18);
+      display:flex; align-items:flex-start; gap:14px;
+      padding:20px 22px; opacity:0;
+      transform:translateX(80px); transition:all 0.45s cubic-bezier(.4,0,.2,1);
+      pointer-events:none;
+    }
+    .toast-notification.show { opacity:1; transform:translateX(0); pointer-events:auto; }
+    .toast-icon {
+      width:48px; height:48px; border-radius:50%; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:1.6rem;
+    }
+    .toast-icon.success { background:#d1fae5; color:#059669; }
+    .toast-icon.error { background:#fee2e2; color:#dc2626; }
+    .toast-title { font-weight:700; font-size:1.05rem; margin-bottom:2px; }
+    .toast-body { color:#6b7280; font-size:0.92rem; line-height:1.4; }
+    .toast-progress {
+      position:absolute; bottom:0; left:0; height:4px;
+      background:#059669; border-radius:0 0 0 14px;
+      animation:toastProgress 4s linear forwards;
+    }
+    @keyframes toastProgress { from{width:100%}to{width:0%} }
+  </style>
+  </style>
+</head>
+<body>
+<!-- HERO SECTION FOR EVENTS (like homepage/services) -->
+<section style="position:relative;min-height:480px;display:flex;align-items:center;justify-content:center;background:#0f172a;overflow:hidden;">
+  <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=1400&q=80" alt="Events Hero" style="position:absolute;top:0;left:0;width:100vw;height:100%;object-fit:cover;z-index:1;filter:brightness(0.75);">
+  <div style="position:relative;z-index:2;max-width:900px;width:100%;padding:0 24px;text-align:left;">
+    <h1 style="font-size:3.2rem;font-weight:900;line-height:1.1;color:#fff;margin-bottom:0.7rem;letter-spacing:0.01em;">
+      Community <span style="color:#3b82f6;">Events</span>
+    </h1>
+    <p style="font-size:1.25rem;color:#e0e7ef;font-weight:500;max-width:600px;margin-bottom:1.7rem;">
+      Browse upcoming workshops, classes, and activities happening across Coventry. Use the calendar to filter by date, or explore categories.
+    </p>
+    <div style="display:flex;gap:22px;flex-wrap:wrap;margin-top:10px;">
+      <span style="background:rgba(31,41,55,0.7);color:#fff;padding:13px 32px;border-radius:999px;font-weight:700;font-size:1.15rem;">11 upcoming events</span>
+      <span style="background:rgba(31,41,55,0.7);color:#fff;padding:13px 32px;border-radius:999px;font-weight:700;font-size:1.15rem;">6 categories</span>
+      <span style="background:rgba(31,41,55,0.7);color:#fff;padding:13px 32px;border-radius:999px;font-weight:700;font-size:1.15rem;">180+ spots available</span>
+    </div>
+  </div>
+</section>
+
+<nav class="bg-white shadow-sm w-full fixed top-0 left-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-3"><img src="logo.png" width="55" height="55" alt="logo"><span class="text-xl font-extrabold">Wellbeing Hub</span></a>
+
+    <div class="hidden md:flex items-center gap-8 text-slate-700 font-medium">
+         <a href="index.html" class="nav-link">Home</a>
+         <a href="about.html" class="nav-link">About Us</a>
+         <a href="services.html" class="nav-link">Services</a>
+         <a href="events.html" class="nav-link active">Events</a>
+         <a href="news.html" class="nav-link">News</a>
+         <a href="contact.html" class="nav-link">Contact</a>
+         <a href="booking.html" class="ml-4 bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">Book Now</a>
+    </div>
+
+    <button id="darkModeToggle" class="text-2xl px-3" aria-label="Toggle dark mode">🌙</button>
+  </div>
+</nav>
+
+<div class="hero-section">
+
+<div class="events-main">
+  <aside>
+    <div class="calendar">
+      <h2>Pick a Date</h2>
+      <div class="calendar-grid">
+        <div class="calendar-day">Su</div><div class="calendar-day">Mo</div><div class="calendar-day">Tu</div><div class="calendar-day">We</div><div class="calendar-day">Th</div><div class="calendar-day">Fr</div><div class="calendar-day">Sa</div>
+      </div>
+      <div class="calendar-grid" style="margin-top:12px;">
+        <div class="calendar-day">1</div><div class="calendar-day">2</div><div class="calendar-day">3</div><div class="calendar-day">4</div><div class="calendar-day">5</div><div class="calendar-day">6</div><div class="calendar-day">7</div>
+        <div class="calendar-day">8</div><div class="calendar-day">9</div><div class="calendar-day">10</div><div class="calendar-day">11</div><div class="calendar-day">12</div><div class="calendar-day">13</div><div class="calendar-day">14</div>
+        <div class="calendar-day">15</div><div class="calendar-day">16</div><div class="calendar-day">17</div><div class="calendar-day">18</div><div class="calendar-day">19</div><div class="calendar-day">20</div><div class="calendar-day">21</div>
+        <div class="calendar-day">22</div><div class="calendar-day">23</div><div class="calendar-day">24</div><div class="calendar-day">25</div><div class="calendar-day today">26</div><div class="calendar-day">27</div><div class="calendar-day">28</div>
+        <div class="calendar-day">29</div><div class="calendar-day">30</div><div class="calendar-day">31</div><div class="calendar-day">1</div><div class="calendar-day">2</div><div class="calendar-day">3</div><div class="calendar-day">4</div>
+      </div>
+    </div>
+
+    <div class="categories" style="margin-top:20px;">
+      <h2>Categories</h2>
+      <div>
+        <button class="category-pill active">All</button>
+        <button class="category-pill">Mental Health</button>
+        <button class="category-pill">Fitness</button>
+        <button class="category-pill">Family</button>
+        <button class="category-pill">Digital</button>
+        <button class="category-pill">Wellbeing</button>
+        <button class="category-pill">Community</button>
+      </div>
+    </div>
+
+    <div class="featured-card" style="margin-top:20px; padding:18px;">
+      <h2>Featured Event</h2>
+      <img class="featured-image" src="https://images.unsplash.com/photo-1543932030-5887c6215c53?auto=format&fit=crop&w=1000&q=80" alt="Featured Family Fun Day" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1000&q=80';">
+      <p><strong>Family Fun Day</strong></p>
+      <p>April 12 · 11am–3pm</p>
+      <p>Join us for bouncy castles, face painting, live music, food stalls, and games for all ages.</p>
+    </div>
+  </aside>
+
+  <main>
+    <section class="upcoming-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;">
+        <div>
+          <h2>Upcoming Events</h2>
+          <p>Click the button below to show the next community sessions, classes, and family activities happening this month.</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="event-btn upcoming-toggle-btn" id="toggleUpcomingEvents" type="button" aria-expanded="false">Show Events ▼</button>
+          <a class="event-btn" href="booking.html" style="margin-top:0;">Book a Place</a>
+        </div>
+      </div>
+      <div class="upcoming-grid" id="upcomingEventsList">
+        <div class="upcoming-item" data-target="mindfulness-event" tabindex="0" role="button" aria-label="View Mindfulness and Meditation Workshop details">
+          <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=900&q=80" alt="Mindfulness workshop" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80';">
+          <span class="upcoming-date">10 Apr · 10:00 AM</span>
+          <h3>Mindfulness &amp; Meditation Workshop</h3>
+          <p>Guided breathing and relaxation for a calm start to the week.</p>
+        </div>
+        <div class="upcoming-item" data-target="family-fun-day-event" tabindex="0" role="button" aria-label="View Family Fun Day details">
+          <img src="https://images.unsplash.com/photo-1543932030-5887c6215c53?auto=format&fit=crop&w=900&q=80" alt="Family fun day activities" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=900&q=80';">
+          <span class="upcoming-date">12 Apr · 11:00 AM</span>
+          <h3>Family Fun Day</h3>
+          <p>Games, crafts, music, and outdoor activities for all ages.</p>
+        </div>
+        <div class="upcoming-item" data-target="healthy-cooking-event" tabindex="0" role="button" aria-label="View Healthy Cooking on a Budget details">
+          <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=900&q=80" alt="Healthy cooking class" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=900&q=80';">
+          <span class="upcoming-date">16 Apr · 1:00 PM</span>
+          <h3>Healthy Cooking on a Budget</h3>
+          <p>Pick up simple meal ideas and practical food-saving tips.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="event-card card" id="mindfulness-event">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80" alt="Mindfulness Morning">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Mental Health</span><span class="event-spots">12 spots</span></div>
+        <h3>Mindfulness &amp; Meditation Workshop</h3>
+        <p>Start your day with guided meditation, breathing exercises, and body-scan relaxation led by a certified mindfulness practitioner.</p>
+        <div class="event-details">
+          <span>📅 10 Apr 2026</span>
+          <span>⏰ 10:00 AM – 11:30 AM</span>
+          <span>📍 Main Hall</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1600&q=80" alt="Yoga for Beginners">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Wellbeing</span><span class="event-spots">18 spots</span></div>
+        <h3>Gentle Yoga for Over 50s</h3>
+        <p>A calm, beginner-friendly yoga session focused on flexibility, balance, and relaxation in a supportive group setting.</p>
+        <div class="event-details">
+          <span>📅 14 Apr 2026</span>
+          <span>⏰ 6:00 PM – 7:00 PM</span>
+          <span>📍 Studio Room 2</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1600&q=80" alt="Parenting Workshop">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Family</span><span class="event-spots">25 spots</span></div>
+        <h3>Positive Parenting Workshop</h3>
+        <p>Learn practical strategies for positive discipline, communication, and building strong family relationships. Free resources provided.</p>
+        <div class="event-details">
+          <span>📅 18 Apr 2026</span>
+          <span>⏰ 5:30 PM – 7:30 PM</span>
+          <span>📍 Seminar Room</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1600&q=80" alt="Art Therapy">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Mental Health</span><span class="event-spots">10 spots</span></div>
+        <h3>Art Therapy Session</h3>
+        <p>Express yourself through creative art activities guided by a licensed art therapist. All materials provided. No experience needed.</p>
+        <div class="event-details">
+          <span>📅 25 Apr 2026</span>
+          <span>⏰ 2:00 PM – 4:00 PM</span>
+          <span>📍 Art Room</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1465101178521-c1a9136a3fd9?auto=format&fit=crop&w=1600&q=80" alt="Green Trail Walk">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Fitness</span><span class="event-spots">20 spots</span></div>
+        <h3>Green Trail Walk</h3>
+        <p>Enjoy a gentle community walk through local parkland with guided wellness questions and quiet reflection time.</p>
+        <div class="event-details">
+          <span>📅 8 Apr 2026</span>
+          <span>⏰ 9:00 AM – 10:30 AM</span>
+          <span>📍 Hub Entrance</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card" id="family-fun-day-event">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1543932030-5887c6215c53?auto=format&fit=crop&w=1600&q=80" alt="Family Fun Day">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Family</span><span class="event-spots">50 spots</span></div>
+        <h3>Family Fun Day</h3>
+        <p>A spectacular day packed with face painting, bouncy castles, arts & crafts stations, games and live music.</p>
+        <div class="event-details">
+          <span>📅 12 Apr 2026</span>
+          <span>⏰ 11:00 AM – 3:00 PM</span>
+          <span>📍 Community Garden</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1488363452917-7f3f9dcf9f77?auto=format&fit=crop&w=1600&q=80" alt="Digital Skills">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Digital</span><span class="event-spots">21 spots</span></div>
+        <h3>Digital Skills Workshop</h3>
+        <p>Learn essential computer and internet skills for job hunting, online safety, and connecting with friends/family.</p>
+        <div class="event-details">
+          <span>📅 20 Apr 2026</span>
+          <span>⏰ 1:00 PM – 3:00 PM</span>
+          <span>📍 Computer Lab</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80" alt="Community Gardening">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Wellbeing</span><span class="event-spots">30 spots</span></div>
+        <h3>Community Gardening</h3>
+        <p>Join local volunteers in planting, watering, and harvesting produce for the food bank with mindfulness and teamwork.</p>
+        <div class="event-details">
+          <span>📅 22 Apr 2026</span>
+          <span>⏰ 10:00 AM – 12:30 PM</span>
+          <span>📍 Community Garden</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1519985176271-adb1088fa94c?auto=format&fit=crop&w=1600&q=80" alt="Volunteer Meetup">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Community</span><span class="event-spots">40 spots</span></div>
+        <h3>Volunteer Welcome Meeting</h3>
+        <p>Connect with existing volunteers, learn available roles at the hub, and join planning for upcoming holiday community support.</p>
+        <div class="event-details">
+          <span>📅 28 Apr 2026</span>
+          <span>⏰ 6:00 PM – 8:00 PM</span>
+          <span>📍 Main Community Room</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card" id="healthy-cooking-event">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1600&q=80" alt="Healthy Cooking on a Budget">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Wellbeing</span><span class="event-spots">16 spots</span></div>
+        <h3>Healthy Cooking on a Budget</h3>
+        <p>Discover easy, low-cost meals, smart shopping tips, and healthy recipes you can recreate at home with confidence.</p>
+        <div class="event-details">
+          <span>📅 16 Apr 2026</span>
+          <span>⏰ 1:00 PM – 2:30 PM</span>
+          <span>📍 Teaching Kitchen</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1600&q=80" alt="Job Seekers Support Group">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Community</span><span class="event-spots">22 spots</span></div>
+        <h3>Job Seekers Support Group</h3>
+        <p>Get help with CV writing, confidence building, interview practice, and access to local employment support services.</p>
+        <div class="event-details">
+          <span>📅 18 Apr 2026</span>
+          <span>⏰ 3:00 PM – 4:30 PM</span>
+          <span>📍 Learning Suite</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+
+    <div class="event-card card">
+      <img class="event-banner" src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1600&q=80" alt="Children's Arts and Crafts">
+      <div class="event-content">
+        <div class="event-meta"><span class="event-tag">Family</span><span class="event-spots">28 spots</span></div>
+        <h3>Children's Arts &amp; Crafts</h3>
+        <p>A fun creative session with painting, paper crafts, and hands-on activities designed for children and families to enjoy together.</p>
+        <div class="event-details">
+          <span>📅 20 Apr 2026</span>
+          <span>⏰ 11:00 AM – 12:30 PM</span>
+          <span>📍 Family Activity Room</span>
+        </div>
+        <a class="event-btn" href="#">Register Now →</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <h4>Wellbeing Hub</h4>
+      <p>Helping Coventry families with support, training, and community connection initiatives.</p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul style="padding-left:0; list-style:none; margin:0;">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="news.html">News</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <p>123 Community Lane, Coventry CV1 2AB</p>
+      <p><a href="mailto:contact@wellbeinghub.org">contact@wellbeinghub.org</a></p>
+      <p>024 7612 3456</p>
+    </div>
+  </div>
+  <div class="footer-bottom">&copy; 2026 Wellbeing Hub. All rights reserved.</div>
+</footer>
+
+<!-- Booking Modal -->
+<div id="bookingModalBg" class="booking-modal-bg">
+  <div class="booking-modal">
+    <button class="modal-close-x" id="closeModal">&times;</button>
+    <div id="modalFormView">
+      <h2>Register for Event</h2>
+      <div id="modalEventName" class="event-name-display"></div>
+      <div id="modalError" class="modal-error"></div>
+      <label>Full Name *</label>
+      <input type="text" id="modalName" placeholder="Enter your full name">
+      <label>Email Address *</label>
+      <input type="email" id="modalEmail" placeholder="you@example.com">
+      <label>Phone Number</label>
+      <input type="tel" id="modalPhone" placeholder="07xxx xxxxxx">
+      <label>Any special requirements?</label>
+      <textarea id="modalNotes" placeholder="Accessibility needs, dietary requirements, etc."></textarea>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="cancelModal">Cancel</button>
+        <button class="btn-confirm" id="confirmModal">Confirm Booking</button>
+      </div>
+    </div>
+    <div id="modalSuccessView" class="modal-success" style="display:none;">
+      <div class="check-circle">&#10003;</div>
+      <h3>Booking Confirmed!</h3>
+      <p id="successEmail">A confirmation email has been sent to your inbox.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div id="toastNotification" class="toast-notification">
+  <div id="toastIcon" class="toast-icon success">&#10003;</div>
+  <div>
+    <div id="toastTitle" class="toast-title">Booking Confirmed!</div>
+    <div id="toastBody" class="toast-body">Confirmation email sent.</div>
+  </div>
+  <div class="toast-progress" id="toastProgress"></div>
+</div>
+
+<script>
+  /*
+   * ===========================================
+   *  EMAIL CONFIRMATION SETUP (EmailJS)
+   * ===========================================
+   *  To enable real email sending:
+   *  1. Sign up free at https://www.emailjs.com
+   *  2. Create an Email Service (e.g. Gmail)
+   *  3. Create an Email Template with variables:
+   *     {{to_email}}, {{to_name}}, {{event_name}}, {{phone}}
+   *  4. Replace the 3 values below with your own:
+   */
+  const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
+  const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
+  const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+
+  if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+
+  // Toast
+  function showToast(type, title, body) {
+    const toast = document.getElementById('toastNotification');
+    const icon = document.getElementById('toastIcon');
+    const prog = document.getElementById('toastProgress');
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastBody').textContent = body;
+    icon.className = 'toast-icon ' + type;
+    icon.textContent = type === 'success' ? '\u2713' : '\u2715';
+    prog.style.background = type === 'success' ? '#059669' : '#dc2626';
+    prog.style.animation = 'none';
+    void prog.offsetWidth;
+    prog.style.animation = 'toastProgress 4s linear forwards';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4200);
+  }
+
+  // Send email
+  function sendConfirmationEmail(name, email, eventName, phone) {
+    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+      showToast('success', 'Booking Confirmed!', 'Confirmation email sent to ' + email);
+      return;
+    }
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: email,
+      to_name: name,
+      event_name: eventName,
+      phone: phone || 'Not provided'
+    }).then(function() {
+      showToast('success', 'Booking Confirmed!', 'Confirmation email sent to ' + email);
+    }, function(err) {
+      console.error('EmailJS Error:', err);
+      showToast('error', 'Booking Saved', 'Could not send email. Please check later.');
+    });
+  }
+
+  // Modal logic
+  (function() {
+    const bg = document.getElementById('bookingModalBg');
+    const formView = document.getElementById('modalFormView');
+    const successView = document.getElementById('modalSuccessView');
+    const errorEl = document.getElementById('modalError');
+    let currentEvent = '';
+
+    // Open modal from any "Register Now" button
+    document.querySelectorAll('.event-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const card = this.closest('.event-card');
+        currentEvent = card ? card.querySelector('h3').textContent : 'Event';
+        document.getElementById('modalEventName').textContent = currentEvent;
+        formView.style.display = 'block';
+        successView.style.display = 'none';
+        errorEl.style.display = 'none';
+        document.getElementById('modalName').value = '';
+        document.getElementById('modalEmail').value = '';
+        document.getElementById('modalPhone').value = '';
+        document.getElementById('modalNotes').value = '';
+        bg.classList.add('active');
+      });
+    });
+
+    // Close modal
+    function closeModal() { bg.classList.remove('active'); }
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    document.getElementById('cancelModal').addEventListener('click', closeModal);
+    bg.addEventListener('click', function(e) { if (e.target === bg) closeModal(); });
+
+    // Confirm booking
+    document.getElementById('confirmModal').addEventListener('click', function() {
+      const name = document.getElementById('modalName').value.trim();
+      const email = document.getElementById('modalEmail').value.trim();
+      const phone = document.getElementById('modalPhone').value.trim();
+
+      if (name.length < 2) {
+        errorEl.textContent = 'Please enter your full name.';
+        errorEl.style.display = 'block'; return;
+      }
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        errorEl.textContent = 'Please enter a valid email address.';
+        errorEl.style.display = 'block'; return;
+      }
+      errorEl.style.display = 'none';
+
+      // Save to localStorage
+      const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+      bookings.push({ name: name, email: email, phone: phone, event: currentEvent, date: new Date().toISOString() });
+      localStorage.setItem('bookings', JSON.stringify(bookings));
+
+      // Send confirmation email
+      sendConfirmationEmail(name, email, currentEvent, phone);
+
+      // Show success in modal
+      formView.style.display = 'none';
+      successView.style.display = 'block';
+      document.getElementById('successEmail').textContent = 'Confirmation email sent to ' + email;
+
+      // Auto-close after 3s
+      setTimeout(closeModal, 3000);
+    });
+  })();
+
+  const toggleUpcomingEvents = document.getElementById('toggleUpcomingEvents');
+  const upcomingEventsList = document.getElementById('upcomingEventsList');
+
+  if (toggleUpcomingEvents && upcomingEventsList) {
+    toggleUpcomingEvents.addEventListener('click', function() {
+      const isOpen = upcomingEventsList.classList.toggle('show');
+      this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      this.textContent = isOpen ? 'Hide Events ▲' : 'Show Events ▼';
+    });
+  }
+
+  document.querySelectorAll('.upcoming-item[data-target]').forEach(function(item) {
+    function goToEvent() {
+      const targetId = item.getAttribute('data-target');
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.style.outline = '3px solid #60a5fa';
+        target.style.outlineOffset = '4px';
+        setTimeout(function() {
+          target.style.outline = '';
+          target.style.outlineOffset = '';
+        }, 1600);
+      }
+    }
+
+    item.addEventListener('click', goToEvent);
+    item.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        goToEvent();
+      }
+    });
+  });
+
+});
+</script>
+  <script src="script.js"></script>
+</body>
+</html>
